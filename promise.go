@@ -11,36 +11,25 @@ import (
 	"time"
 )
 
-var promises = make([]PromiseTicket, 0, 100)
+var (
+	promiseRepository = NewPromiseRepository(99)
+)
 
 const (
 	HTTP_GET  = "GET"
 	HTTP_POST = "POST"
 )
 
-type PromiseTicket struct {
-	Id           bson.ObjectId
-	Name         string
-	ExecuteAfter time.Time
-
-	//callback HttpCallback
-}
-
-type HttpCallback struct {
-	id  bson.ObjectId
-	url string
-}
-
 func main() {
 	log.Println("started at " + time.Now().String())
 
-	promises = append(promises, PromiseTicket{
+	promiseRepository.Add(PromiseTicket{
 		Id:           bson.NewObjectId(),
 		Name:         "ticket 1",
 		ExecuteAfter: time.Now(),
 	})
 
-	promises = append(promises, PromiseTicket{
+	promiseRepository.Add(PromiseTicket{
 		Id:           bson.NewObjectId(),
 		Name:         "ticket 2",
 		ExecuteAfter: time.Now(),
@@ -57,12 +46,12 @@ func handlePromise(response http.ResponseWriter, request *http.Request) {
 
 	switch request.Method {
 	case HTTP_GET:
+		promises := promiseRepository.All()
 		wire, err := json.Marshal(promises)
 		if err != nil {
 			log.Println("error while marshalling promises: " + err.Error())
 			response.WriteHeader(http.StatusInternalServerError)
 		} else {
-			log.Println("returning: " + string(wire))
 			response.Header().Set("Content-Type", "application/json")
 			response.Write(wire)
 		}
@@ -80,7 +69,7 @@ func handlePromise(response http.ResponseWriter, request *http.Request) {
 				response.WriteHeader(http.StatusBadRequest)
 				response.Write([]byte(err.Error()))
 			} else {
-				promises = append(promises, promise)
+				promiseRepository.Add(promise)
 			}
 		}
 
@@ -88,5 +77,4 @@ func handlePromise(response http.ResponseWriter, request *http.Request) {
 		log.Printf("unsupported http request method: %v", request.Method)
 		response.WriteHeader(http.StatusBadRequest)
 	}
-
 }
