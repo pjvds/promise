@@ -2,17 +2,18 @@ package main
 
 import (
 	//"labix.org/v2/mgo"
-	"labix.org/v2/mgo/bson"
-	"net/http"
-	//"flag"
 	"encoding/json"
+	"flag"
 	"io/ioutil"
+	"labix.org/v2/mgo/bson"
 	"log"
+	"net/http"
 	"time"
 )
 
 var (
 	promiseRepository = NewPromiseRepository(99)
+	address           = *flag.String("address", ":8080", "address to server on, eq: 127.0.0.1:80")
 )
 
 const (
@@ -21,7 +22,7 @@ const (
 )
 
 func main() {
-	log.Println("started at " + time.Now().String())
+	flag.Parse()
 
 	promiseRepository.Add(PromiseTicket{
 		Id:           bson.NewObjectId(),
@@ -35,10 +36,10 @@ func main() {
 		ExecuteAfter: time.Now(),
 	})
 
-	log.Println("start serving...")
-
 	http.Handle("/promise", http.HandlerFunc(handlePromise))
-	http.ListenAndServe(":8080", nil)
+
+	log.Println("Serving at " + address)
+	log.Fatal(http.ListenAndServe(address, nil))
 }
 
 func handlePromise(response http.ResponseWriter, request *http.Request) {
