@@ -33,11 +33,21 @@ type ServeInfo struct {
 	promiseTicketController *controller.PromiseTicketController
 }
 
+func Log(handler http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("%s %s %s", r.RemoteAddr, r.Method, r.URL)
+		handler.ServeHTTP(w, r)
+	})
+}
+
 func Serve(info *ServeInfo) {
-	http.HandleFunc("/promise", func(w http.ResponseWriter, r *http.Request) {
-		info.promiseTicketController.Handle(w, r)
+	ctrl := info.promiseTicketController
+
+	http.Handle("/", http.FileServer(http.Dir("static")))
+	http.HandleFunc("/api/v1/promise", func(w http.ResponseWriter, r *http.Request) {
+		ctrl.Handle(w, r)
 	})
 
 	log.Println("Serving at " + info.uri)
-	log.Fatal(http.ListenAndServe(info.uri, nil))
+	log.Fatal(http.ListenAndServe(info.uri, Log(http.DefaultServeMux)))
 }
