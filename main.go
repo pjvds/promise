@@ -1,12 +1,13 @@
 package main
 
 import (
+	log "code.google.com/p/log4go"
 	"github.com/pjvds/promise/controller"
 	"github.com/pjvds/promise/data"
 	"github.com/pjvds/promise/data/mongo"
 	"labix.org/v2/mgo"
-	"log"
 	"net/http"
+	"time"
 )
 
 func main() {
@@ -35,7 +36,7 @@ type ServeInfo struct {
 
 func Log(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("%s %s %s", r.RemoteAddr, r.Method, r.URL)
+		log.Info("%s %s %s", r.RemoteAddr, r.Method, r.URL)
 		handler.ServeHTTP(w, r)
 	})
 }
@@ -48,6 +49,9 @@ func Serve(info *ServeInfo) {
 		ctrl.Handle(w, r)
 	})
 
-	log.Println("Serving at " + info.uri)
-	log.Fatal(http.ListenAndServe(info.uri, Log(http.DefaultServeMux)))
+	log.Info("Serving at " + info.uri)
+	log.Critical(http.ListenAndServe(info.uri, Log(http.DefaultServeMux)))
+
+	// Let log4go flush
+	time.Sleep(time.Second)
 }

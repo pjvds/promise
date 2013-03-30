@@ -2,8 +2,8 @@ package data
 
 import (
 	"bytes"
+	log "code.google.com/p/log4go"
 	"encoding/json"
-	"log"
 )
 
 type JsonMarshaller struct {
@@ -31,13 +31,13 @@ func (m JsonMarshaller) Marshal(v interface{}) ([]byte, error) {
 	}
 
 	if data != nil {
-		log.Printf("marshalled to json: ", string(data))
+		log.Debug("marshalled to json: ", string(data))
 	}
 	return data, err
 }
 
 func (m JsonMarshaller) Unmarshal(data []byte, v interface{}) error {
-	log.Printf("unmarshalling json: '%v'", string(data))
+	log.Debug("unmarshalling json: '%v'", string(data))
 
 	return json.Unmarshal(data, v)
 }

@@ -1,8 +1,8 @@
 package memory
 
 import (
+	log "code.google.com/p/log4go"
 	"github.com/pjvds/promise/model"
-	"log"
 	"time"
 )
 

@@ -1,10 +1,10 @@
 package mongo
 
 import (
+	log "code.google.com/p/log4go"
 	"github.com/pjvds/promise/model"
 	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
-	"log"
 )
 
 type MongoPromiseTicketRepository struct {
@@ -27,9 +27,9 @@ func (r *MongoPromiseTicketRepository) Add(promise *model.PromiseTicket) error {
 	err := r.collection.Insert(&promise)
 
 	if err != nil {
-		log.Printf("error while inserting document in Mongo: %v", err)
+		log.Trace("error while inserting document in Mongo: %v", err)
 	} else {
-		log.Printf("new document inserted into mongo with id: %v", promise.Id)
+		log.Trace("new document inserted into mongo with id: %v", promise.Id)
 	}
 
 	return err
