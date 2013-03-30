@@ -63,6 +63,7 @@ func handlePromise(response http.ResponseWriter, request *http.Request) {
 			response.WriteHeader(http.StatusInternalServerError)
 		} else {
 			log.Println("returning: " + string(wire))
+			response.Header().Set("Content-Type", "application/json")
 			response.Write(wire)
 		}
 
