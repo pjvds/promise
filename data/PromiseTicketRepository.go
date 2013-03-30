@@ -5,6 +5,6 @@ import (
 )
 
 type PromiseTicketRepository interface {
-	Add(promise model.PromiseTicket) error
+	Add(promise *model.PromiseTicket) error
 	All() []model.PromiseTicket
 }

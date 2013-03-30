@@ -4,6 +4,7 @@ import (
 	"github.com/pjvds/promise/model"
 	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
+	"log"
 )
 
 type MongoPromiseTicketRepository struct {
@@ -20,8 +21,18 @@ func NewMongoTicketPromiseRepository(session *MongoPromiseSession) (*MongoPromis
 	}, nil
 }
 
-func (r *MongoPromiseTicketRepository) Add(promise model.PromiseTicket) error {
-	return r.collection.Insert(&promise)
+func (r *MongoPromiseTicketRepository) Add(promise *model.PromiseTicket) error {
+	promise.Id = bson.NewObjectId()
+
+	err := r.collection.Insert(&promise)
+
+	if err != nil {
+		log.Printf("error while inserting document in Mongo: %v", err)
+	} else {
+		log.Printf("new document inserted into mongo with id: %v", promise.Id)
+	}
+
+	return err
 }
 
 func (r *MongoPromiseTicketRepository) All() []model.PromiseTicket {

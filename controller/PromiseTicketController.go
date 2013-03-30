@@ -53,7 +53,7 @@ func (ctr *PromiseTicketController) Handle(response http.ResponseWriter, request
 				response.WriteHeader(http.StatusBadRequest)
 				response.Write([]byte(err.Error()))
 			} else {
-				repository.Add(promise)
+				repository.Add(&promise)
 			}
 		}
 
