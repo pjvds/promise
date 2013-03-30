@@ -23,7 +23,7 @@ type Marshaller interface {
 func (m JsonMarshaller) Marshal(v interface{}) ([]byte, error) {
 	data, err := json.Marshal(v)
 
-	if err == nil {
+	if err == nil && m.Format {
 		var buffer bytes.Buffer
 		err = json.Indent(&buffer, data, "", "\t")
 		data = buffer.Bytes()
