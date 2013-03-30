@@ -2,7 +2,6 @@ package main
 
 import (
 	//"labix.org/v2/mgo"
-	"encoding/json"
 	"flag"
 	"io/ioutil"
 	"labix.org/v2/mgo/bson"
@@ -14,6 +13,7 @@ import (
 var (
 	promiseRepository = NewPromiseRepository(99)
 	address           = *flag.String("address", ":8080", "address to server on, eq: 127.0.0.1:80")
+	marshaller        = NewJsonMarshaller()
 )
 
 const (
@@ -48,7 +48,7 @@ func handlePromise(response http.ResponseWriter, request *http.Request) {
 	switch request.Method {
 	case HTTP_GET:
 		promises := promiseRepository.All()
-		wire, err := json.Marshal(promises)
+		wire, err := marshaller.Marshal(promises)
 		if err != nil {
 			log.Println("error while marshalling promises: " + err.Error())
 			response.WriteHeader(http.StatusInternalServerError)
@@ -64,7 +64,7 @@ func handlePromise(response http.ResponseWriter, request *http.Request) {
 			response.WriteHeader(http.StatusInternalServerError)
 		} else {
 			var promise PromiseTicket
-			err = json.Unmarshal(wire, &promise)
+			err = marshaller.Unmarshal(wire, &promise)
 
 			if err != nil {
 				response.WriteHeader(http.StatusBadRequest)
