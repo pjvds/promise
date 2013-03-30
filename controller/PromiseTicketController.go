@@ -48,6 +48,8 @@ func (ctr *PromiseTicketController) Handle(response http.ResponseWriter, request
 			err = marshaller.Unmarshal(wire, &promise)
 
 			if err != nil {
+				log.Printf("bad request: ", err)
+
 				response.WriteHeader(http.StatusBadRequest)
 				response.Write([]byte(err.Error()))
 			} else {

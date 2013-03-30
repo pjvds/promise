@@ -3,6 +3,7 @@ package data
 import (
 	"bytes"
 	"encoding/json"
+	"log"
 )
 
 type JsonMarshaller struct {
@@ -29,9 +30,14 @@ func (m JsonMarshaller) Marshal(v interface{}) ([]byte, error) {
 		data = buffer.Bytes()
 	}
 
+	if data != nil {
+		log.Printf("marshalled to json: ", string(data))
+	}
 	return data, err
 }
 
 func (m JsonMarshaller) Unmarshal(data []byte, v interface{}) error {
+	log.Printf("unmarshalling json: '%v'", string(data))
+
 	return json.Unmarshal(data, v)
 }
