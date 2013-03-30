@@ -28,5 +28,9 @@ func (r *MongoPromiseTicketRepository) All() []model.PromiseTicket {
 	var tickets []model.PromiseTicket
 	r.collection.Find(bson.D{}).All(&tickets)
 
+	if tickets == nil {
+		tickets = make([]model.PromiseTicket, 0, 0)
+	}
+
 	return tickets
 }
