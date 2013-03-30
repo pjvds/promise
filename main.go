@@ -13,20 +13,24 @@ import (
 func main() {
 	server, err := mgo.Dial("localhost")
 	if err != nil {
-		panic(err)
+		log.Error("Unable to dail to mongo: %v", err)
+		log.Error("Are you sure mongod is running?")
+	} else {
+		database := server.DB("promise")
+		session := mongo.NewMongoPromiseSession(server, database)
+		repoFac := mongo.NewMongoPromiseRepositoryFactory(session)
+		repo := repoFac.CreatePromiseTicketRepository()
+		marsh := data.NewJsonMarshaller()
+		ctrl := controller.NewPromiseTicketController(repo, marsh)
+
+		Serve(&ServeInfo{
+			uri: ":8080",
+			promiseTicketController: ctrl,
+		})
 	}
 
-	database := server.DB("promise")
-	session := mongo.NewMongoPromiseSession(server, database)
-	repoFac := mongo.NewMongoPromiseRepositoryFactory(session)
-	repo := repoFac.CreatePromiseTicketRepository()
-	marsh := data.NewJsonMarshaller()
-	ctrl := controller.NewPromiseTicketController(repo, marsh)
-
-	Serve(&ServeInfo{
-		uri: ":8080",
-		promiseTicketController: ctrl,
-	})
+	// Let log4go flush
+	time.Sleep(time.Second)
 }
 
 type ServeInfo struct {
@@ -51,7 +55,4 @@ func Serve(info *ServeInfo) {
 
 	log.Info("Serving at " + info.uri)
 	log.Critical(http.ListenAndServe(info.uri, Log(http.DefaultServeMux)))
-
-	// Let log4go flush
-	time.Sleep(time.Second)
 }
