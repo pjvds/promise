@@ -35,7 +35,6 @@ func (ctr *PromiseTicketController) Handle(response http.ResponseWriter, request
 			response.Header().Set("Content-Type", "application/json")
 			response.Write(wire)
 		}
-
 	case "POST":
 		wire, err := ioutil.ReadAll(request.Body)
 		if err != nil {
