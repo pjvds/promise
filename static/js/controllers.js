@@ -3,7 +3,11 @@
 /* Controllers */
 
 
-function MyCtrl1($scope, $http) {
+function HomeController($scope, $http) {
+	$http.get('/api/v1/promise').
+		success(function(data){
+			$scope.promises = data
+		});
 
   	$scope.send = function() {
 		var promise = { 'Name': $scope.name };
@@ -18,7 +22,7 @@ function MyCtrl1($scope, $http) {
 	      	});
 	}
 }
-MyCtrl1.$inject = ['$scope', '$http'];
+HomeController.$inject = ['$scope', '$http'];
 
 
 function MyCtrl2() {

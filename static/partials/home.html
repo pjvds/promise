@@ -1,0 +1,11 @@
+	<p>This is the partial for view 1.</p>
+	<form ng-controller="HomeController">
+		<label>Name:</label>
+		<input type="text" ng-model="name" placeholder="name...">
+		<button type="button" class="btn" ng-click="send()">Search</button>
+	</form>
+	<ul>
+		<li ng-repeat="promise in promises">
+			{{promise.Name}}
+		</li>
+	</ul>
