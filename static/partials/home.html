@@ -7,7 +7,14 @@
         <form>
             <input type="text" ng-model="name" placeholder="name"> 
             <input type="text" ng-model="url" placeholder="callback url"> 
+            <input ng-model="when">
             <datetimepicker ng-model="when"></datetimepicker>
+            <div class="input-append">
+        			<input data-format="MM/dd/yyyy HH:mm:ss PP" type="text"></input>
+        			<span class="add-on">
+        		  	<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+        			</span>
+        		</div>
             <a class="btn btn-large btn-success" ng-click="send()" href="#">Add</a>
         </form>
         <ul>
