@@ -1,11 +1,16 @@
-	<p>This is the partial for view 1.</p>
-	<form ng-controller="HomeController">
-		<label>Name:</label>
-		<input type="text" ng-model="name" placeholder="name...">
-		<button type="button" class="btn" ng-click="send()">Search</button>
-	</form>
-	<ul>
-		<li ng-repeat="promise in promises">
-			{{promise.Name}}
-		</li>
-	</ul>
+        <h1>
+            Super awesome marketing speak!
+        </h1>
+        <p class="lead">
+            Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
+        </p>
+        <form>
+            <input type="text" ng-model="name" placeholder="name"> 
+            <input type="text" ng-model="url" placeholder="callback url"> 
+            <datetimepicker ng-model="when"></datetimepicker>
+            <a class="btn btn-large btn-success" ng-click="send()" href="#">Add</a>
+        </form>
+        <ul>
+            <li ng-repeat="promise in promises">{{promise.Name}}
+            </li>
+        </ul>

@@ -10,7 +10,7 @@ function HomeController($scope, $http) {
 		});
 
   	$scope.send = function() {
-		var promise = { 'Name': $scope.name };
+		var promise = { 'Name': $scope.name, 'Url':$scope.url, 'When':$scope.when };
 	    $http.post('/api/v1/promise',promise).
 	    	success(function(data){
 	        	$scope.success = true;
