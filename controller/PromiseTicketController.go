@@ -4,7 +4,7 @@ import (
 	log "code.google.com/p/log4go"
 	"github.com/pjvds/promise/data"
 	"github.com/pjvds/promise/messaging"
-	"github.com/pjvds/promise/model"
+	"github.com/pjvds/promise/model/events"
 	"github.com/pjvds/promise/serialization"
 	"io/ioutil"
 	"net/http"
@@ -54,15 +54,15 @@ func (ctr *PromiseTicketController) get(response http.ResponseWriter, request *h
 }
 
 func (ctr *PromiseTicketController) post(response http.ResponseWriter, request *http.Request) {
-	repository := ctr.repository
 	marshaller := ctr.marshaller
+	bus := ctr.bus
 
 	wire, err := ioutil.ReadAll(request.Body)
 	if err != nil {
 		log.Error("couldn't read request body: " + err.Error())
 		response.WriteHeader(http.StatusInternalServerError)
 	} else {
-		var promise model.PromiseTicket
+		var promise events.NewTicketCreated
 		err = marshaller.Unmarshal(wire, &promise)
 
 		if err != nil {
@@ -71,7 +71,12 @@ func (ctr *PromiseTicketController) post(response http.ResponseWriter, request *
 			response.WriteHeader(http.StatusBadRequest)
 			response.Write([]byte(err.Error()))
 		} else {
-			repository.Add(&promise)
+			err = bus.Publish(&promise.Message)
+
+			if err != nil {
+				log.Error("unable to publish message with bus: %v", err.Error())
+				response.WriteHeader(http.StatusInternalServerError)
+			}
 		}
 	}
 }
