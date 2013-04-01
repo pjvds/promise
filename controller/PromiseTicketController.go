@@ -3,20 +3,24 @@ package controller
 import (
 	log "code.google.com/p/log4go"
 	"github.com/pjvds/promise/data"
+	"github.com/pjvds/promise/messaging"
 	"github.com/pjvds/promise/model"
+	"github.com/pjvds/promise/serialization"
 	"io/ioutil"
 	"net/http"
 )
 
 type PromiseTicketController struct {
 	repository data.PromiseTicketRepository
-	marshaller data.Marshaller
+	marshaller serialization.Marshaller
+	bus        messaging.Bus
 }
 
-func NewPromiseTicketController(repository data.PromiseTicketRepository, marshaller data.Marshaller) *PromiseTicketController {
+func NewPromiseTicketController(repository data.PromiseTicketRepository, bus messaging.Bus, marshaller serialization.Marshaller) *PromiseTicketController {
 	return &PromiseTicketController{
 		repository: repository,
 		marshaller: marshaller,
+		bus:        bus,
 	}
 }
 

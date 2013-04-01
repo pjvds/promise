@@ -3,8 +3,9 @@ package main
 import (
 	log "code.google.com/p/log4go"
 	"github.com/pjvds/promise/controller"
-	"github.com/pjvds/promise/data"
 	"github.com/pjvds/promise/data/mongo"
+	"github.com/pjvds/promise/messaging"
+	"github.com/pjvds/promise/serialization"
 	"labix.org/v2/mgo"
 	"net/http"
 	"time"
@@ -20,8 +21,9 @@ func main() {
 		session := mongo.NewMongoPromiseSession(server, database)
 		repoFac := mongo.NewMongoPromiseRepositoryFactory(session)
 		repo := repoFac.CreatePromiseTicketRepository()
-		marsh := data.NewJsonMarshaller()
-		ctrl := controller.NewPromiseTicketController(repo, marsh)
+		marsh := serialization.NewJsonMarshaller()
+		bus := messaging.NewNsqBus()
+		ctrl := controller.NewPromiseTicketController(repo, bus, marsh)
 
 		Serve(&ServeInfo{
 			uri: ":8080",

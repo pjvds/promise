@@ -22,7 +22,7 @@ func NewMongoTicketPromiseRepository(session *MongoPromiseSession) (*MongoPromis
 }
 
 func (r *MongoPromiseTicketRepository) Add(promise *model.PromiseTicket) error {
-	promise.Id = bson.NewObjectId()
+	promise.Id = model.NewIdentifier()
 
 	err := r.collection.Insert(&promise)
 

@@ -21,3 +21,13 @@ func (fac *MongoPromiseRepositoryFactory) CreatePromiseTicketRepository() *Mongo
 
 	return repo
 }
+
+func (fac *MongoPromiseRepositoryFactory) CreateCallbackAttemptRepository() *MongoCallbackAttemptRepository {
+	repo, err := NewMongoCallbackAttemptRepository(fac.session)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return repo
+}
