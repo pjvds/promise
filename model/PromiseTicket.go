@@ -1,6 +1,7 @@
 package model
 
 import (
+	log "code.google.com/p/log4go"
 	"github.com/pjvds/promise/eventing"
 	"time"
 )
@@ -15,19 +16,28 @@ type PromiseTicket struct {
 }
 
 func NewTicket(name string, url string, when time.Time) *PromiseTicket {
-	createEvent := &NewTicketCreated{
+	createEvent := NewTicketCreated{
 		Name: name,
 		Url:  url,
 		When: when,
 	}
-	ticket := &PromiseTicket{}
-	ticket.Apply(&createEvent.EventMessage)
+	ticket := &PromiseTicket{
+		EventSource: eventing.NewEventSource(),
+	}
+	ticket.EventSource.RegisterHandler(NewTicketCreated{}, func(event interface{}) error {
+		e := event.(NewTicketCreated)
+		return ticket.ApplyNewTicket(e)
+	})
+
+	ticket.Apply(createEvent)
 
 	return ticket
 }
 
-func (ticket *PromiseTicket) ApplyNewTicket(e *NewTicketCreated) {
+func (ticket *PromiseTicket) ApplyNewTicket(e NewTicketCreated) error {
 	ticket.Name = e.Name
 	ticket.Url = e.Url
 	ticket.When = e.When
+
+	return nil
 }
