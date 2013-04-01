@@ -22,14 +22,13 @@ func NewMongoTicketPromiseRepository(session *MongoPromiseSession) (*MongoPromis
 }
 
 func (r *MongoPromiseTicketRepository) Add(promise *model.PromiseTicket) error {
-	promise.Id = model.NewIdentifier()
 
 	err := r.collection.Insert(&promise)
 
 	if err != nil {
 		log.Trace("error while inserting document in Mongo: %v", err)
 	} else {
-		log.Trace("new document inserted into mongo with id: %v", promise.Id)
+		log.Trace("new document inserted into mongo with id: %v", promise)
 	}
 
 	return err
